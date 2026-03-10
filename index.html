@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invitacion Graduacion - Jhonatan Benavides</title>
+    <title>Invitaci&oacute;n Graduaci&oacute;n - Jhonatan Benavides</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;600;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -244,14 +244,61 @@
             fill: #e8a030;
         }
 
-        .rsvp {
+        .rsvp-section {
             text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .rsvp-label {
             font-size: 9px;
             letter-spacing: 2px;
             color: #888;
             text-transform: uppercase;
-            margin-top: 15px;
             font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .confirm-btn {
+            display: inline-block;
+            padding: 10px 30px;
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn:hover {
+            background: #1b4332;
+            transform: scale(1.05);
+        }
+
+        .confirm-btn.confirmed {
+            background: #888;
+            cursor: default;
+        }
+
+        .confirm-btn.confirmed:hover {
+            transform: none;
+        }
+
+        .counter {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #2d6a4f;
+            font-weight: 700;
+        }
+
+        .counter span {
+            font-size: 20px;
         }
 
         /* Gold sparkle accents */
@@ -334,8 +381,8 @@
                     </svg>
                 </div>
 
-                <p class="join-text">Acompananos a la</p>
-                <h1 class="title">Fiesta de Graduacion</h1>
+                <p class="join-text">Acomp&aacute;&ntilde;anos a la</p>
+                <h1 class="title">Fiesta de Graduaci&oacute;n</h1>
                 <p class="date">
                     <span>21</span>|<span>Marzo</span>|<span>2026</span>
                 </p>
@@ -394,13 +441,19 @@
                     </div>
 
                     <div class="detail-block">
-                        <h3>Celebracion</h3>
+                        <h3>Celebraci&oacute;n</h3>
                         <p>4:00 PM</p>
                         <p style="margin-top:6px;">Carrera 5 #7-36</p>
                     </div>
                 </div>
 
-                <p class="rsvp">Confirmar asistencia</p>
+                <div class="rsvp-section">
+                    <p class="rsvp-label">Confirmar asistencia</p>
+                    <button class="confirm-btn" id="confirmBtn" onclick="confirmarAsistencia()">Confirmar</button>
+                    <div class="counter">
+                        <span id="countNumber">0</span> confirmado(s)
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -423,6 +476,42 @@
             confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
             container.appendChild(confetti);
         }
+
+        // RSVP Confirmation system
+        const STORAGE_KEY = 'grad_jhonatan_confirmed';
+        const COUNT_KEY = 'grad_jhonatan_count';
+
+        function getCount() {
+            return parseInt(localStorage.getItem(COUNT_KEY) || '0');
+        }
+
+        function isConfirmed() {
+            return localStorage.getItem(STORAGE_KEY) === 'true';
+        }
+
+        function updateUI() {
+            const btn = document.getElementById('confirmBtn');
+            const count = document.getElementById('countNumber');
+            const total = getCount();
+            count.textContent = total;
+
+            if (isConfirmed()) {
+                btn.textContent = 'Asistencia confirmada';
+                btn.classList.add('confirmed');
+            }
+        }
+
+        function confirmarAsistencia() {
+            if (isConfirmed()) return;
+
+            localStorage.setItem(STORAGE_KEY, 'true');
+            const newCount = getCount() + 1;
+            localStorage.setItem(COUNT_KEY, newCount.toString());
+            updateUI();
+        }
+
+        // Initialize on load
+        updateUI();
     </script>
 </body>
 </html>
