@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitacion Graduacion - Jhonatan Benavides</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;600;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .invitation-wrapper {
+            width: 700px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .background-layer {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Background with graduation celebration feel */
+        .background-layer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg,
+                rgba(20,20,20,0.85) 0%,
+                rgba(40,40,40,0.7) 25%,
+                rgba(30,30,30,0.75) 50%,
+                rgba(20,20,20,0.85) 75%,
+                rgba(10,10,10,0.9) 100%);
+            z-index: 0;
+        }
+
+        .bg-image {
+            width: 100%;
+            display: block;
+        }
+
+        .card {
+            position: relative;
+            background: white;
+            width: 75%;
+            margin: 0 auto;
+            padding: 45px 40px 35px;
+            z-index: 2;
+        }
+
+        .outer-container {
+            background: linear-gradient(180deg,
+                #1a1a2e 0%,
+                #16213e 20%,
+                #0f3460 40%,
+                #1a1a2e 60%,
+                #16213e 80%,
+                #1a1a2e 100%);
+            padding: 50px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Confetti animation */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(900px) rotate(720deg); opacity: 0.3; }
+        }
+
+        /* Gears SVG area */
+        .gears-section {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .gears-svg {
+            width: 160px;
+            height: 100px;
+        }
+
+        .gear {
+            fill: none;
+            stroke: #5a8a6a;
+            stroke-width: 2;
+            animation: rotate-gear 8s linear infinite;
+            transform-origin: center;
+        }
+
+        .gear-reverse {
+            animation: rotate-gear-reverse 8s linear infinite;
+        }
+
+        @keyframes rotate-gear {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotate-gear-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .grad-cap {
+            fill: #1a1a1a;
+        }
+
+        /* Typography */
+        .join-text {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .title {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            letter-spacing: 3px;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .date {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: #5a8a6a;
+            margin-bottom: 18px;
+            letter-spacing: 2px;
+        }
+
+        .date span {
+            margin: 0 8px;
+        }
+
+        .divider {
+            width: 80%;
+            height: 1px;
+            background: #ddd;
+            margin: 0 auto 18px;
+        }
+
+        .honoring-text {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .name {
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 42px;
+            color: #2d6a4f;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* Details section */
+        .details-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 10px;
+        }
+
+        .detail-block {
+            flex: 1;
+            text-align: center;
+        }
+
+        .detail-block h3 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #2d6a4f;
+            display: inline-block;
+            padding-bottom: 3px;
+        }
+
+        .detail-block p {
+            font-size: 11px;
+            color: #444;
+            line-height: 1.6;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .center-icon {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 10px;
+        }
+
+        .circuit-svg {
+            width: 100px;
+            height: 100px;
+        }
+
+        .circuit-line {
+            stroke: #1a5c6a;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .circuit-dot {
+            fill: #1a5c6a;
+        }
+
+        .circuit-flower {
+            fill: #e8a030;
+        }
+
+        .rsvp {
+            text-align: center;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* Gold sparkle accents */
+        .sparkle {
+            position: absolute;
+            background: gold;
+            border-radius: 50%;
+            animation: sparkle-anim 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle-anim {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @media print {
+            body { background: white; }
+            .outer-container {
+                box-shadow: none;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .confetti { display: none; }
+            .invitation-wrapper { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invitation-wrapper">
+        <div class="outer-container" id="outerContainer">
+            <!-- Confetti will be added by JS -->
+            <div class="card">
+                <!-- Gears + Graduation Cap -->
+                <div class="gears-section">
+                    <svg class="gears-svg" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Large gear -->
+                        <g transform="translate(80, 65)">
+                            <circle class="gear" cx="0" cy="0" r="28" stroke="#7ab08a" stroke-width="2.5" fill="none" style="animation: rotate-gear 10s linear infinite; transform-origin: 80px 65px;"/>
+                            <circle cx="0" cy="0" r="20" stroke="#7ab08a" stroke-width="1.5" fill="none"/>
+                            <!-- Gear teeth -->
+                            <rect x="-4" y="-32" width="8" height="8" rx="1" fill="#7ab08a">
+                                <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"/>
+                            </rect>
+                            <rect x="-4" y="24" width="8" height="8" rx="1" fill="#7ab08a"/>
+                            <rect x="24" y="-4" width="8" height="8" rx="1" fill="#7ab08a"/>
+                            <rect x="-32" y="-4" width="8" height="8" rx="1" fill="#7ab08a"/>
+                            <rect x="17" y="17" width="8" height="8" rx="1" fill="#7ab08a" transform="rotate(45 21 21)"/>
+                            <rect x="-25" y="-25" width="8" height="8" rx="1" fill="#7ab08a" transform="rotate(45 -21 -21)"/>
+                            <rect x="17" y="-25" width="8" height="8" rx="1" fill="#7ab08a" transform="rotate(45 21 -21)"/>
+                            <rect x="-25" y="17" width="8" height="8" rx="1" fill="#7ab08a" transform="rotate(45 -21 21)"/>
+                        </g>
+                        <!-- Medium gear -->
+                        <g transform="translate(128, 38)">
+                            <circle cx="0" cy="0" r="18" stroke="#9abfa6" stroke-width="2" fill="none"/>
+                            <circle cx="0" cy="0" r="12" stroke="#9abfa6" stroke-width="1.5" fill="none"/>
+                            <rect x="-3" y="-22" width="6" height="6" rx="1" fill="#9abfa6"/>
+                            <rect x="-3" y="16" width="6" height="6" rx="1" fill="#9abfa6"/>
+                            <rect x="16" y="-3" width="6" height="6" rx="1" fill="#9abfa6"/>
+                            <rect x="-22" y="-3" width="6" height="6" rx="1" fill="#9abfa6"/>
+                            <rect x="10" y="10" width="6" height="6" rx="1" fill="#9abfa6" transform="rotate(45 13 13)"/>
+                            <rect x="-16" y="-16" width="6" height="6" rx="1" fill="#9abfa6" transform="rotate(45 -13 -13)"/>
+                        </g>
+                        <!-- Small gear -->
+                        <g transform="translate(55, 35)">
+                            <circle cx="0" cy="0" r="12" stroke="#b5d4bf" stroke-width="1.5" fill="none"/>
+                            <circle cx="0" cy="0" r="7" stroke="#b5d4bf" stroke-width="1" fill="none"/>
+                            <rect x="-2.5" y="-15" width="5" height="5" rx="1" fill="#b5d4bf"/>
+                            <rect x="-2.5" y="10" width="5" height="5" rx="1" fill="#b5d4bf"/>
+                            <rect x="10" y="-2.5" width="5" height="5" rx="1" fill="#b5d4bf"/>
+                            <rect x="-15" y="-2.5" width="5" height="5" rx="1" fill="#b5d4bf"/>
+                        </g>
+                        <!-- Graduation Cap -->
+                        <g transform="translate(60, 8)">
+                            <polygon points="20,0 40,10 20,20 0,10" fill="#1a1a1a"/>
+                            <rect x="18" y="10" width="4" height="14" fill="#1a1a1a"/>
+                            <polygon points="10,12 30,12 28,22 12,22" fill="#1a1a1a" opacity="0.9"/>
+                            <line x1="38" y1="10" x2="42" y2="22" stroke="#1a1a1a" stroke-width="1.5"/>
+                            <circle cx="42" cy="24" r="2" fill="#d4a843"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <p class="join-text">Acompananos a la</p>
+                <h1 class="title">Fiesta de Graduacion</h1>
+                <p class="date">
+                    <span>21</span>|<span>Marzo</span>|<span>2026</span>
+                </p>
+
+                <div class="divider"></div>
+
+                <p class="honoring-text">En honor a</p>
+                <h2 class="name">Jhonatan Benavides</h2>
+
+                <!-- Details -->
+                <div class="details-section">
+                    <div class="detail-block">
+                        <h3>Ceremonia</h3>
+                        <p>4:00 PM</p>
+                        <p style="margin-top:6px;">Carrera 5 #7-36</p>
+                    </div>
+
+                    <div class="center-icon">
+                        <svg class="circuit-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Circuit board pattern -->
+                            <line x1="50" y1="10" x2="50" y2="90" class="circuit-line"/>
+                            <line x1="10" y1="50" x2="90" y2="50" class="circuit-line"/>
+                            <line x1="50" y1="50" x2="20" y2="20" class="circuit-line"/>
+                            <line x1="50" y1="50" x2="80" y2="20" class="circuit-line"/>
+                            <line x1="50" y1="50" x2="20" y2="80" class="circuit-line"/>
+                            <line x1="50" y1="50" x2="80" y2="80" class="circuit-line"/>
+                            <line x1="30" y1="30" x2="10" y2="30" class="circuit-line"/>
+                            <line x1="70" y1="30" x2="90" y2="30" class="circuit-line"/>
+                            <line x1="30" y1="70" x2="10" y2="70" class="circuit-line"/>
+                            <line x1="70" y1="70" x2="90" y2="70" class="circuit-line"/>
+                            <!-- Circuit dots -->
+                            <circle cx="50" cy="10" r="4" class="circuit-dot"/>
+                            <circle cx="50" cy="90" r="4" class="circuit-dot"/>
+                            <circle cx="10" cy="50" r="4" class="circuit-dot"/>
+                            <circle cx="90" cy="50" r="4" class="circuit-dot"/>
+                            <circle cx="20" cy="20" r="4" class="circuit-dot"/>
+                            <circle cx="80" cy="20" r="4" class="circuit-dot"/>
+                            <circle cx="20" cy="80" r="4" class="circuit-dot"/>
+                            <circle cx="80" cy="80" r="4" class="circuit-dot"/>
+                            <circle cx="10" cy="30" r="3" class="circuit-dot"/>
+                            <circle cx="90" cy="30" r="3" class="circuit-dot"/>
+                            <circle cx="10" cy="70" r="3" class="circuit-dot"/>
+                            <circle cx="90" cy="70" r="3" class="circuit-dot"/>
+                            <circle cx="50" cy="50" r="5" class="circuit-dot"/>
+                            <!-- Decorative flowers/stars -->
+                            <circle cx="35" cy="45" r="4" fill="#e8a030" opacity="0.8"/>
+                            <circle cx="65" cy="45" r="3" fill="#d4a843" opacity="0.7"/>
+                            <circle cx="50" cy="65" r="5" fill="#e8a030" opacity="0.8"/>
+                            <circle cx="40" cy="60" r="3" fill="#c4983a" opacity="0.6"/>
+                            <circle cx="60" cy="58" r="4" fill="#d4a843" opacity="0.7"/>
+                            <!-- Leaves -->
+                            <ellipse cx="45" cy="55" rx="6" ry="3" fill="#2d6a4f" opacity="0.6" transform="rotate(-30 45 55)"/>
+                            <ellipse cx="58" cy="52" rx="5" ry="2.5" fill="#2d6a4f" opacity="0.5" transform="rotate(20 58 52)"/>
+                            <ellipse cx="48" cy="70" rx="6" ry="3" fill="#2d6a4f" opacity="0.6" transform="rotate(15 48 70)"/>
+                        </svg>
+                    </div>
+
+                    <div class="detail-block">
+                        <h3>Celebracion</h3>
+                        <p>4:00 PM</p>
+                        <p style="margin-top:6px;">Carrera 5 #7-36</p>
+                    </div>
+                </div>
+
+                <p class="rsvp">Confirmar asistencia</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add confetti
+        const container = document.getElementById('outerContainer');
+        const colors = ['#FFD700', '#FFA500', '#C0C0C0', '#FFFFFF', '#FFE4B5', '#DAA520'];
+
+        for (let i = 0; i < 40; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = Math.random() * 100 + '%';
+            confetti.style.width = (Math.random() * 8 + 4) + 'px';
+            confetti.style.height = (Math.random() * 8 + 4) + 'px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDuration = (Math.random() * 4 + 3) + 's';
+            confetti.style.animationDelay = (Math.random() * 5) + 's';
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            container.appendChild(confetti);
+        }
+    </script>
+</body>
+</html>
