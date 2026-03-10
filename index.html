@@ -479,23 +479,44 @@
             container.appendChild(confetti);
         }
 
-        // RSVP Confirmation system
+        // RSVP Confirmation system with shared cloud counter
         const STORAGE_KEY = 'grad_jhonatan_confirmed';
-        const COUNT_KEY = 'grad_jhonatan_count';
-
-        function getCount() {
-            return parseInt(localStorage.getItem(COUNT_KEY) || '0');
-        }
+        const API_BASE = 'https://api.counterapi.dev/v1';
+        const NAMESPACE = 'grad-jhonatan-benavides-2026';
+        const KEY = 'confirmados';
 
         function isConfirmed() {
             return localStorage.getItem(STORAGE_KEY) === 'true';
         }
 
-        function updateUI() {
+        async function fetchCount() {
+            try {
+                const res = await fetch(API_BASE + '/' + NAMESPACE + '/' + KEY);
+                if (!res.ok) return 0;
+                const data = await res.json();
+                return data.count || 0;
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        async function incrementCount() {
+            try {
+                const res = await fetch(API_BASE + '/' + NAMESPACE + '/' + KEY + '/up');
+                if (!res.ok) return null;
+                const data = await res.json();
+                return data.count;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function updateUI() {
             const btn = document.getElementById('confirmBtn');
-            const count = document.getElementById('countNumber');
-            const total = getCount();
-            count.textContent = total;
+            const countEl = document.getElementById('countNumber');
+
+            const total = await fetchCount();
+            countEl.textContent = total;
 
             if (isConfirmed()) {
                 btn.textContent = 'Asistencia confirmada';
@@ -503,13 +524,25 @@
             }
         }
 
-        function confirmarAsistencia() {
+        async function confirmarAsistencia() {
             if (isConfirmed()) return;
 
-            localStorage.setItem(STORAGE_KEY, 'true');
-            const newCount = getCount() + 1;
-            localStorage.setItem(COUNT_KEY, newCount.toString());
-            updateUI();
+            const btn = document.getElementById('confirmBtn');
+            btn.textContent = 'Confirmando...';
+            btn.disabled = true;
+
+            const newCount = await incrementCount();
+            if (newCount !== null) {
+                localStorage.setItem(STORAGE_KEY, 'true');
+                document.getElementById('countNumber').textContent = newCount;
+                btn.textContent = 'Asistencia confirmada';
+                btn.classList.add('confirmed');
+            } else {
+                // Fallback: mark as confirmed locally
+                localStorage.setItem(STORAGE_KEY, 'true');
+                btn.textContent = 'Asistencia confirmada';
+                btn.classList.add('confirmed');
+            }
         }
 
         // Initialize on load
