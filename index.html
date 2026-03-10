@@ -262,6 +262,38 @@
             margin-bottom: 12px;
         }
 
+        .guest-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .guest-selector label {
+            font-size: 11px;
+            color: #444;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .guest-selector select {
+            padding: 6px 12px;
+            border: 2px solid #2d6a4f;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #2d6a4f;
+            background: white;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .guest-selector select:focus {
+            border-color: #1b4332;
+        }
+
         .confirm-btn {
             display: inline-block;
             padding: 10px 30px;
@@ -392,6 +424,15 @@
             }
 
             .detail-block p {
+                font-size: 10px;
+            }
+
+            .guest-selector {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .guest-selector label {
                 font-size: 10px;
             }
 
@@ -574,9 +615,24 @@
 
                 <div class="rsvp-section">
                     <p class="rsvp-label">Confirmar asistencia</p>
+                    <div class="guest-selector" id="guestSelector">
+                        <label for="numGuests">&iquest;Cu&aacute;ntas personas asistir&aacute;n?</label>
+                        <select id="numGuests">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
                     <button class="confirm-btn" id="confirmBtn" onclick="confirmarAsistencia()">Confirmar</button>
                     <div class="counter">
-                        <span id="countNumber">0</span> confirmado(s)
+                        <span id="countNumber">0</span> persona(s) asistir&aacute;n
                     </div>
                 </div>
             </div>
@@ -604,12 +660,17 @@
 
         // RSVP Confirmation system with shared cloud counter
         const STORAGE_KEY = 'grad_jhonatan_confirmed';
+        const GUESTS_KEY = 'grad_jhonatan_guests';
         const API_BASE = 'https://api.counterapi.dev/v1';
         const NAMESPACE = 'grad-jhonatan-benavides-2026';
-        const KEY = 'confirmados';
+        const KEY = 'asistentes';
 
         function isConfirmed() {
             return localStorage.getItem(STORAGE_KEY) === 'true';
+        }
+
+        function getSavedGuests() {
+            return parseInt(localStorage.getItem(GUESTS_KEY) || '0');
         }
 
         async function fetchCount() {
@@ -623,12 +684,18 @@
             }
         }
 
-        async function incrementCount() {
+        async function incrementBy(amount) {
             try {
-                const res = await fetch(API_BASE + '/' + NAMESPACE + '/' + KEY + '/up');
-                if (!res.ok) return null;
-                const data = await res.json();
-                return data.count;
+                // Increment one by one to add the correct amount
+                let lastCount = 0;
+                for (let i = 0; i < amount; i++) {
+                    const res = await fetch(API_BASE + '/' + NAMESPACE + '/' + KEY + '/up');
+                    if (res.ok) {
+                        const data = await res.json();
+                        lastCount = data.count || 0;
+                    }
+                }
+                return lastCount;
             } catch (e) {
                 return null;
             }
@@ -637,13 +704,16 @@
         async function updateUI() {
             const btn = document.getElementById('confirmBtn');
             const countEl = document.getElementById('countNumber');
+            const guestSelector = document.getElementById('guestSelector');
 
             const total = await fetchCount();
             countEl.textContent = total;
 
             if (isConfirmed()) {
-                btn.textContent = 'Asistencia confirmada';
+                const saved = getSavedGuests();
+                btn.textContent = 'Confirmado (' + saved + ' persona' + (saved > 1 ? 's' : '') + ')';
                 btn.classList.add('confirmed');
+                guestSelector.style.display = 'none';
             }
         }
 
@@ -651,21 +721,22 @@
             if (isConfirmed()) return;
 
             const btn = document.getElementById('confirmBtn');
+            const numGuests = parseInt(document.getElementById('numGuests').value);
+
             btn.textContent = 'Confirmando...';
             btn.disabled = true;
 
-            const newCount = await incrementCount();
+            const newCount = await incrementBy(numGuests);
+            localStorage.setItem(STORAGE_KEY, 'true');
+            localStorage.setItem(GUESTS_KEY, numGuests.toString());
+
             if (newCount !== null) {
-                localStorage.setItem(STORAGE_KEY, 'true');
                 document.getElementById('countNumber').textContent = newCount;
-                btn.textContent = 'Asistencia confirmada';
-                btn.classList.add('confirmed');
-            } else {
-                // Fallback: mark as confirmed locally
-                localStorage.setItem(STORAGE_KEY, 'true');
-                btn.textContent = 'Asistencia confirmada';
-                btn.classList.add('confirmed');
             }
+
+            btn.textContent = 'Confirmado (' + numGuests + ' persona' + (numGuests > 1 ? 's' : '') + ')';
+            btn.classList.add('confirmed');
+            document.getElementById('guestSelector').style.display = 'none';
         }
 
         // Initialize on load
