@@ -659,11 +659,12 @@
         }
 
         // RSVP Confirmation system with shared cloud counter
-        const STORAGE_KEY = 'grad_jhonatan_confirmed';
-        const GUESTS_KEY = 'grad_jhonatan_guests';
+        const STORAGE_KEY = 'grad_jhonatan_confirmed_final';
+        const GUESTS_KEY = 'grad_jhonatan_guests_final';
+        const CACHE_COUNT_KEY = 'grad_jhonatan_cached_count_final';
         const API_BASE = 'https://api.counterapi.dev/v1';
         const NAMESPACE = 'grad-jhonatan-benavides-2026';
-        const KEY = 'asistentes';
+        const KEY = 'asistentes-final';
 
         function isConfirmed() {
             return localStorage.getItem(STORAGE_KEY) === 'true';
@@ -673,38 +674,53 @@
             return parseInt(localStorage.getItem(GUESTS_KEY) || '0');
         }
 
-        async function fetchCount() {
-            try {
-                const res = await fetch(API_BASE + '/' + NAMESPACE + '/' + KEY);
-                if (!res.ok) return 0;
-                const data = await res.json();
-                return data.count || 0;
-            } catch (e) {
-                return 0;
+        function getCachedCount() {
+            return parseInt(localStorage.getItem(CACHE_COUNT_KEY) || '0');
+        }
+
+        function saveCachedCount(count) {
+            localStorage.setItem(CACHE_COUNT_KEY, count.toString());
+        }
+
+        async function fetchWithRetry(url, retries) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) return await res.json();
+                } catch (e) { /* retry */ }
+                if (i < retries - 1) await new Promise(r => setTimeout(r, 1000));
             }
+            return null;
+        }
+
+        async function fetchCount() {
+            const data = await fetchWithRetry(API_BASE + '/' + NAMESPACE + '/' + KEY, 3);
+            if (data && typeof data.count === 'number') {
+                saveCachedCount(data.count);
+                return data.count;
+            }
+            return getCachedCount();
         }
 
         async function incrementBy(amount) {
-            try {
-                // Increment one by one to add the correct amount
-                let lastCount = 0;
-                for (let i = 0; i < amount; i++) {
-                    const res = await fetch(API_BASE + '/' + NAMESPACE + '/' + KEY + '/up');
-                    if (res.ok) {
-                        const data = await res.json();
-                        lastCount = data.count || 0;
-                    }
+            let lastCount = null;
+            for (let i = 0; i < amount; i++) {
+                const data = await fetchWithRetry(API_BASE + '/' + NAMESPACE + '/' + KEY + '/up', 3);
+                if (data && typeof data.count === 'number') {
+                    lastCount = data.count;
                 }
-                return lastCount;
-            } catch (e) {
-                return null;
             }
+            if (lastCount !== null) saveCachedCount(lastCount);
+            return lastCount;
         }
 
         async function updateUI() {
             const btn = document.getElementById('confirmBtn');
             const countEl = document.getElementById('countNumber');
             const guestSelector = document.getElementById('guestSelector');
+
+            // Show loading state
+            countEl.textContent = '...';
 
             const total = await fetchCount();
             countEl.textContent = total;
